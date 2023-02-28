@@ -10,6 +10,7 @@ fi
 }
 select option in Install_Docker Install_SoftEther Install_v2ray Exit; do
 	case $option in
+##Install Docker Code
 		"Install_Docker")
 #check linux version
 			if grep -i ubuntu /etc/os-release > /dev/null; then
@@ -37,11 +38,26 @@ select option in Install_Docker Install_SoftEther Install_v2ray Exit; do
 			apt-get update
 			apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose -y
 				;;
+## Softether Installation Code
 				"Install_SoftEther")
 			sudocheck
+			if grep -i 20.04 /etc/os-release > /dev/null; then
+                          exit 0
+                        else
+                          exit 1
+                        echo "You can just use Ubuntu 20.04"
+                        fi
 			apt-get update -y
 			apt-get install build-essential gnupg2 gcc make -y
+			if $(uname -a | grep -i x86_64); then
+			   exit 0
+			else
+			   echo "This scipt is just for Intel x64 arch we'll update soon :)"
+			if $(ls | grep -i softether); then
+			   exit 0
+			else	
 			wget http://www.softether-download.com/files/softether/v4.38-9760-rtm-2021.08.17-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-v4.38-9760-rtm-2021.08.17-linux-x64-64bit.tar.gz
+			fi
 			tar -xvzf softether-vpnserver-v4.38-9760-rtm-2021.08.17-linux-x64-64bit.tar.gz
 			cd vpnserver
 			make
@@ -55,10 +71,11 @@ select option in Install_Docker Install_SoftEther Install_v2ray Exit; do
 			cd -
 			cat service > /etc/init.d/vpnserver
 			chmod 755 /etc/init.d/vpnserver
+			/etc/init.d/vpnserver start
+			update-rc.d vpnserver defaults
+			systemctl daemon-reload
 			systemctl start vpnserver
 			systemctl enable vpnserver
-			systemctl daemon-reload
-			update-rc.d vpnserver defaults
 				;;
 		"Exit")
 			echo "Have a nice day :)"
