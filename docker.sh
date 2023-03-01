@@ -20,14 +20,15 @@ select option in Install_Docker Install_SoftEther Install_v2ray Exit; do
 			echo "You can Just use Ubuntu"
 			fi
 #check user
-		sudocheck
+			sudocheck
 #Update apt & Install dependency
 			apt-get update && apt-get install \
 				ca-certificates \
 				curl \
 				gnupg \
-				lsb-release
+				lsb-release -y
 #Create key directory
+			sed -i '1 i\nameserver 178.22.122.100' /etc/resolv.conf
 			mkdir -m 0755 -p /etc/apt/keyrings
 			curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg \
 			--dearmor -o /etc/apt/keyrings/docker.gpg
@@ -39,23 +40,25 @@ select option in Install_Docker Install_SoftEther Install_v2ray Exit; do
 			apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose -y
 				;;
 ## Softether Installation Code
-				"Install_SoftEther")
+		"Install_SoftEther")
 			sudocheck
 			if grep -i 20.04 /etc/os-release > /dev/null; then
-                          exit 0
+			echo "Your Distro Ubuntu 20.04"
                         else
-                          exit 1
-                        echo "You can just use Ubuntu 20.04"
+                          echo "You can just use Ubuntu 20.04"
+			  exit 1
                         fi
 			apt-get update -y
 			apt-get install build-essential gnupg2 gcc make -y
-			if $(uname -a | grep -i x86_64); then
-			   exit 0
+			uname -a | grep -i x86_64 > /dev/null
+			if [ $(echo $?) -eq 0 ] ; then
+			echo "Your Arch is OK!"
 			else
-			   echo "This scipt is just for Intel x64 arch we'll update soon :)"
-			if $(ls | grep -i softether); then
-			   exit 0
-			else	
+			   echo "This script is just for Intel x64 arch we'll update soon :)"
+			exit 1  
+			fi
+			ls | grep -i softether > /dev/null
+			if [ $(echo $?) -ne 0 ]; then
 			wget http://www.softether-download.com/files/softether/v4.38-9760-rtm-2021.08.17-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-v4.38-9760-rtm-2021.08.17-linux-x64-64bit.tar.gz
 			fi
 			tar -xvzf softether-vpnserver-v4.38-9760-rtm-2021.08.17-linux-x64-64bit.tar.gz
@@ -84,9 +87,9 @@ select option in Install_Docker Install_SoftEther Install_v2ray Exit; do
 		"Install_v2ray")
 			which docker > /dev/null
 			if [ $(echo $?) -ne 0 ]; then
-				echo "Install Docker First!"
-				exit 1
-			fi
+			echo "Install Docker First!"
+                        exit 1
+                        fi
 			select role in Bridge-server Upstream-server Exit; do
 				case $role in
 				"Bridge-server")
@@ -128,7 +131,6 @@ select option in Install_Docker Install_SoftEther Install_v2ray Exit; do
 			done
 	esac
 done
-
 
 
 
