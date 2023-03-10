@@ -57,7 +57,7 @@ select option in Install_Docker Install_SoftEther Install_v2ray Exit; do
 			   echo "This script is just for Intel x64 arch we'll update soon :)"
 			exit 1  
 			fi
-			wget https://github.com/behnam2/vpn-installer-script/raw/master/softether-vpnserver-v4.38-9760-rtm-2021.08.17-linux-x64-64bit.tar.gz
+			wget https://github.com/behnam2/Needed-Files/raw/main/softether-vpnserver-v4.38-9760-rtm-2021.08.17-linux-x64-64bit.tar.gz
 			tar -xvzf softether-vpnserver-v4.38-9760-rtm-2021.08.17-linux-x64-64bit.tar.gz
 			cd vpnserver
 			make
